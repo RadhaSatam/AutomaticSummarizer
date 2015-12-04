@@ -2,7 +2,7 @@
 
 # Import
 from __future__ import division
-import nltk, re
+import nltk, re, unicodedata
 from nltk import *
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
@@ -27,15 +27,63 @@ class AutomaticSummarizerTool(object):
 		return " ".join(self.get_summary(input))
 		
 	def get_summary(self, input):
-		tokenizer = RegexpTokenizer('\W+')
+		tokenizer = RegexpTokenizer('\w+|\$[\d\.]+')
+		
+		# Get all the words in the lower case
 		words = [word.lower() for word in tokenizer.tokenize(input)]
+
+		# Remove the stop words like and, or, etc.
 		words = [word for word in words if word not in stopwords.words()]
-		freqWords = FreqDist(words)
 		
-		most_freq = [pair[0] for pair in freqWords.items()[:100]]
+		# Frequency of each word in input
+		freqWords = FreqDist(words)		
+		most_freq = [word[0] for word in freqWords.most_common(10)]
 		
-		print most_freq
-		return "abc"
+		# actual_sents contains all the original sentences with the case intact
+		actual_sents = self.split_to_sentences(input)
+		actual_sents[:] = [item for item in actual_sents if item != '']
+		num_sentences = len(actual_sents)
+		
+		# working_sents contains the senteces with lower case -- will allow for comparison
+		working_sents = [sentence.lower() for sentence in actual_sents]
+		
+		# output_sents - emtpy list to store the sentences that contain most frequent words
+		output_sents = []
+		
+		# num_freqWords_inSents stores the number of times a frequent word occurs in each of the sentences
+		num_freqWords_inSents = [0] * num_sentences	
+
+		# Loop through each frequent word and add to ouput sents if 
+		for i in range(0, num_sentences):
+			for word in most_freq:
+					if (word in working_sents[i]):
+						num_freqWords_inSents[i] = num_freqWords_inSents[i] + 1
+						if(actual_sents[i] not in output_sents):
+							output_sents.append(actual_sents[i])
+					
+		num_freqWords_inSents[:] = [item for item in num_freqWords_inSents if item != 0]
+		
+		print num_freqWords_inSents
+		print output_sents
+		
+		while len(num_freqWords_inSents)>0:
+			
+		print ""
+		# Rearranges the output sentences to include the sentences which contain the most frequent words first
+		
+		# output_priority = [output_sents[i] for i in sorted(num_freqWords_inSents)]
+		
+		print ""
+		print output_priority
+		
+		# sort the output sentences back to their original order
+		return self.reorder(output_sents, input)
+		
+
+	def reorder( self, output_sents, input ):
+		output_sents.sort( lambda s1, s2: 
+			input.find(s1) - input.find(s2) )
+		return output_sents
 		
 # Main method - run by going to folder C:/Python27 and then python <location of python file>
 def main():
@@ -44,19 +92,24 @@ def main():
 	summObj = AutomaticSummarizerTool()
 	
 	# Fetching Data from the text file containing the news
-	dataFile = open('E:/PythonProjects/news.txt', 'r')
+	dataFile = open('E:/PythonProjects/AutomaticSummarizer/news2.txt', 'r')
 	lines = dataFile.read()
+	lines = (lines.decode("utf-8")).encode("ascii","ignore")
+	
 	para = summObj.split_to_paragraphs(lines)
+	
 	title = para[0]
 	
 	# Print resulst 	
 	print "Title: \n" + title
 	print ""
 	print "Summary extracted from first few lines: \n" + para[1]
-
-	inputList = dataFile.readlines()
+	print ""
+	
 	abc = summObj.get_summary(lines)
-
+	
+	#print "Summary based on Frequency Distribution of words: \n\n" + abc[1] + abc[2]
+	
 if __name__ == '__main__':
 	main()		
 	
