@@ -9,7 +9,7 @@ from nltk.corpus import stopwords
 # Created by Radha Satam
 # December 12, 2015
 # For CIS 496H (Instructor: Gabriel Murray)
-
+# 
 class AutomaticSummarizerTool(object):
 
 	# Function to split text into sentences
