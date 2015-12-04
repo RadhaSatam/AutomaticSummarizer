@@ -84,7 +84,7 @@ def main():
 	summObj = AutomaticSummarizerTool()
 	
 	# Fetching Data from the text file containing the news
-	dataFile = open('E:/PythonProjects/AutomaticSummarizer/news2.txt', 'r')
+	dataFile = open('E:/PythonProjects/AutomaticSummarizer/news.txt', 'r')
 	lines = dataFile.read()
 	lines = (lines.decode("utf-8")).encode("ascii","ignore")
 	
@@ -100,7 +100,7 @@ def main():
 	
 	abc = summObj.get_summary(lines)
 	
-	print "Summary based on Frequency Distribution of words: \n\n" + abc[1] + abc[2]
+	print "Summary based on Frequency Distribution of words: \n\n" + abc[1] + ' ' + abc[2]
 	
 if __name__ == '__main__':
 	main()		
