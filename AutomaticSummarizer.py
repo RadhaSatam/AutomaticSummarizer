@@ -44,14 +44,12 @@ class AutomaticSummarizerTool(object):
 		
 		# working_sents contains the senteces with lower case -- will allow for comparison
 		working_sents = [sentence.lower() for sentence in actual_sents]
-		
-		# output_sents - emtpy list to store the sentences that contain most frequent words
 		output_sents = []
 		
 		# num_freqWords_inSents stores the number of times a frequent word occurs in each of the sentences
 		num_freqWords_inSents = [0] * num_sentences	
 
-		# Loop through each frequent word and add to ouput sents if 
+		# Loop through all the sentences and all the words to see which sentences contain occurences of the most frequent words
 		for i in range(0, num_sentences):
 			for word in most_freq:
 					if (word in working_sents[i]):
@@ -66,7 +64,7 @@ class AutomaticSummarizerTool(object):
 		output_priority = [y for (x,y) in sorted(zip_op_num, reverse=True)]
 		
 		# Fetches first 3 senteces that contain the most number of frequent words in it		
-		relevant_output = output_priority[0:3]
+		relevant_output = output_priority[0:5]
 		
 		# sort the output sentences back to their original order
 		return self.reorder(relevant_output, input)
@@ -83,8 +81,14 @@ def main():
 	# Object of class AutomaticSummarizeTool
 	summObj = AutomaticSummarizerTool()
 	
+	print "\n--------------------------------------------"
+	print "Simple Automatic Summarizer of News Articles"
+	print "--------------------------------------------\n"
+	
+	File_location = raw_input("Enter the location of the text file containing the news article: ")
+	
 	# Fetching Data from the text file containing the news
-	dataFile = open('E:/PythonProjects/AutomaticSummarizer/news.txt', 'r')
+	dataFile = open(File_location, 'r')
 	lines = dataFile.read()
 	lines = (lines.decode("utf-8")).encode("ascii","ignore")
 	
@@ -92,16 +96,13 @@ def main():
 	
 	title = para[0]
 	
-	# Print resulst 	
-	print "Title: " + title
-	print ""
-	print "Summary extracted from first few lines: \n\n" + para[1]
-	print ""
+	# Print Result 	
+	print "\nTitle: " + title
+	print "\nSummary extracted from first few lines: \n\n" + para[1]
 	
 	abc = summObj.get_summary(lines)
 	
-	print "Summary based on Frequency Distribution of words: \n\n" + abc[1] + ' ' + abc[2]
+	print "\nSummary based on Frequency Distribution of words: \n\n" + abc[1] + ' ' + abc[2]
 	
 if __name__ == '__main__':
 	main()		
-	
