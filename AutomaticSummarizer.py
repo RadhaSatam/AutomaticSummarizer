@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-# Import
+# Imports
 from __future__ import division
 import nltk, re, unicodedata
 from nltk import *
@@ -32,12 +30,12 @@ class AutomaticSummarizerTool(object):
 		# Get all the words in the lower case
 		words = [word.lower() for word in tokenizer.tokenize(input)]
 
-		# Remove the stop words like and, or, etc.
+		# Remove the stop words like the, and, or, etc.
 		words = [word for word in words if word not in stopwords.words()]
 		
 		# Frequency of each word in input
 		freqWords = FreqDist(words)		
-		most_freq = [word[0] for word in freqWords.most_common(10)]
+		most_freq = [word[0] for word in freqWords.most_common(20)]
 		
 		# actual_sents contains all the original sentences with the case intact
 		actual_sents = self.split_to_sentences(input)
@@ -62,24 +60,18 @@ class AutomaticSummarizerTool(object):
 							output_sents.append(actual_sents[i])
 					
 		num_freqWords_inSents[:] = [item for item in num_freqWords_inSents if item != 0]
+		zip_op_num = zip(num_freqWords_inSents, output_sents)
 		
-		print num_freqWords_inSents
-		print output_sents
-		
-		while len(num_freqWords_inSents)>0:
-			
-		print ""
 		# Rearranges the output sentences to include the sentences which contain the most frequent words first
+		output_priority = [y for (x,y) in sorted(zip_op_num, reverse=True)]
 		
-		# output_priority = [output_sents[i] for i in sorted(num_freqWords_inSents)]
-		
-		print ""
-		print output_priority
+		# Fetches first 3 senteces that contain the most number of frequent words in it		
+		relevant_output = output_priority[0:3]
 		
 		# sort the output sentences back to their original order
-		return self.reorder(output_sents, input)
+		return self.reorder(relevant_output, input)
 		
-
+	# Function to sort the ouput in the order of occurrence in the article
 	def reorder( self, output_sents, input ):
 		output_sents.sort( lambda s1, s2: 
 			input.find(s1) - input.find(s2) )
@@ -101,14 +93,14 @@ def main():
 	title = para[0]
 	
 	# Print resulst 	
-	print "Title: \n" + title
+	print "Title: " + title
 	print ""
-	print "Summary extracted from first few lines: \n" + para[1]
+	print "Summary extracted from first few lines: \n\n" + para[1]
 	print ""
 	
 	abc = summObj.get_summary(lines)
 	
-	#print "Summary based on Frequency Distribution of words: \n\n" + abc[1] + abc[2]
+	print "Summary based on Frequency Distribution of words: \n\n" + abc[1] + abc[2]
 	
 if __name__ == '__main__':
 	main()		
