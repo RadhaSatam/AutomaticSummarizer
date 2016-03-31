@@ -6,3 +6,6 @@ It displays the following -
 1. Title of the news article
 2. Summary - By extracting the first paragraph of the artilce. (excluding the title) 
 3. Summary - By counting the word frequencies in the entire text and returning the most relevant sentences in the right order. 
+
+Example - 
+![News Summarization Example](Screenshots/news.PNG?raw=true "News Summarization Example")
