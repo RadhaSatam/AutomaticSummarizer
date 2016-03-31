@@ -8,4 +8,4 @@ It displays the following -
 3. Summary - By counting the word frequencies in the entire text and returning the most relevant sentences in the right order. 
 
 Example - 
-![News Summarization Example](Screenshots/news.PNG?raw=true "News Summarization Example")
+![News Summarization Example](AutomaticSummarizer/Screenshots/news.PNG?raw=true "News Summarization Example")
